@@ -74,11 +74,20 @@ contract Voting is Ownable {
     function tally() public onlyOwner {
         require(status == WorkflowStatus.VotingSessionEnded, "Voting session has not ended yet");
         require(proposals.length != 0, "There is not proposal");
-        for (uint i = 0; i < proposals.length; i++) {
-            if (winningProposalId < proposals[i].voteCount) {
-                winningProposalId = i;
+        if (proposals.length < 50) { // Limit the number of iteration to prevent DoS attack (use 50 instead of proposals.length)
+            for (uint i = 0; i < proposals.length; i++) {
+                if (winningProposalId < proposals[i].voteCount) {
+                    winningProposalId = i;
+                }
+            }
+        } else {
+            for (uint i = 0; i < 50; i++) { 
+                if (winningProposalId < proposals[i].voteCount) {
+                    winningProposalId = i;
+                }
             }
         }
+
         status = WorkflowStatus.VotesTallied;
     }
 
