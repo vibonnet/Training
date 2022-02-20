@@ -10,7 +10,7 @@ import getWeb3 from "./getWeb3";
 import "./App.css";
 
 class App extends Component {
-  state = { web3: null, accounts: null, contract: null, voters: null, proposals: null, winner: null };
+  state = { web3: null, accounts: null, contract: null, voters: null, proposals: null, winner: null, };
 
   componentDidMount = async () => {
     try {
@@ -40,6 +40,23 @@ class App extends Component {
     }
   };
 
+  // Update state when an event occur
+  componentDidUpdate = async () => {
+    const { contract } = this.state;
+    await window.ethereum.on('accountsChanged', (accounts) => {
+      this.setState({ accounts });
+    });
+    await contract.events.VoterRegistered(() => {
+      this.run();
+    });
+    await contract.events.ProposalRegistered(() => {
+      this.run();
+    });
+    await contract.events.Voted(() => {
+      this.run();
+    });
+  }
+
   run = async () => {
     const { contract } = this.state;
 
@@ -48,9 +65,9 @@ class App extends Component {
     const proposals = await contract.methods.getProposals().call();
 
     const status = await contract.methods.status.call().call();
-    if (status == 5) {
+    if (status === 5) {
       const winner = await contract.methods.getWinner().call();
-      alert("Proposition retenue: " + winner);      
+      alert("Proposition retenue: " + winner);
     }
 
     // Update state with the results.
@@ -60,54 +77,49 @@ class App extends Component {
   // Execute "registerVoter" function in the contract
   registerVoter = async () => {
     const { accounts, contract } = this.state;
-    const owner = accounts[0];
     const address = this.address.value;
 
-    await contract.methods.registerVoter(address).send({ from: owner });
+    await contract.methods.registerVoter(address).send({ from: accounts[0] });
     this.run();
   };
 
   // Execute "changeStatus" function in the contract
   changeStatus = async () => {
     const { accounts, contract } = this.state;
-    const owner = accounts[0];
     const status = this.status.value;
 
-    await contract.methods.changeStatus(status).send({ from: owner });
+    await contract.methods.changeStatus(status).send({ from: accounts[0] });
     this.run();
   };
 
   // Execute "proposalRegistration" function in the contract
   proposalRegistration = async () => {
     const { accounts, contract } = this.state;
-    const owner = accounts[0];
     const description = this.description.value;
 
-    await contract.methods.proposalRegistration(description).send({ from: owner });
+    await contract.methods.proposalRegistration(description).send({ from: accounts[0] });
     this.run();
   };
 
   // Execute "vote" function in the contract
   vote = async () => {
     const { accounts, contract } = this.state;
-    const owner = accounts[0];
     const propositionId = this.propositionId.value;
 
-    await contract.methods.vote(propositionId).send({ from: owner });
+    await contract.methods.vote(propositionId).send({ from: accounts[0] });
     this.run();
   };
 
   // Execute "tally" function in the contract
   tally = async () => {
     const { accounts, contract } = this.state;
-    const owner = accounts[0];
 
-    await contract.methods.tally().send({ from: owner });
+    await contract.methods.tally().send({ from: accounts[0] });
     this.run();
   };
 
   render() {
-    const { voters, proposals } = this.state;
+    const { voters, proposals, accounts } = this.state;
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
@@ -115,6 +127,7 @@ class App extends Component {
       <div className="App">
         <div>
           <h2 className="text-center">Système de vote</h2>
+          <p className="text-center">{accounts[0]}</p>
           <hr></hr>
           <br></br>
         </div>
