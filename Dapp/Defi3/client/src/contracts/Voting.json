@@ -22346,6 +22346,12 @@
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x041fCaaD7063654f803eC09C2c401c036D0fD174",
+      "transactionHash": "0x4e6fa43cfd7e685498762a1081780c7a9cf4e87986a2eaf7fdc2ea3f46dfd14e"
+    },
     "1644847508329": {
       "events": {},
       "links": {},
@@ -22417,10 +22423,118 @@
       "links": {},
       "address": "0x228eb930c36Dc384F58fDe89E0d177eb3d2BccbD",
       "transactionHash": "0x0e324bc3a64147b6fbeb4646e3657da572038f501267a304b9dda963854672f3"
+    },
+    "1646056828312": {
+      "events": {},
+      "links": {},
+      "address": "0x2429E1C5De6582F78bEC8dC1a5c68e6AF70e3AB5",
+      "transactionHash": "0xe8a4b535d4a0c913f3f3746f5848756bee540237bc119e9fe86a29edd9fdf8ab"
+    },
+    "1646057708466": {
+      "events": {},
+      "links": {},
+      "address": "0x801d906F1bEF2AB5Fb327035C5BB11027dD233D4",
+      "transactionHash": "0x1a7906bc097d76390ade39fa884cedafb7c1863cf0a4fd315b8ce89de156d777"
+    },
+    "1646058050331": {
+      "events": {},
+      "links": {},
+      "address": "0xb51728Cbac736f4959A4F3C89415e8eB7951cb42",
+      "transactionHash": "0x21fb003a1f2f89d653d96224f3dce88df232959505ac0d749660d4a8d39b3b7f"
+    },
+    "1646058703201": {
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0x92e393e9b54e2f801d3ea4beb0c5e71a21cc34a5d34b77d0fb8a3aa1650dc18f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ],
+          "name": "ProposalRegistered",
+          "type": "event"
+        },
+        "0x4d99b957a2bc29a30ebd96a7be8e68fe50a3c701db28a91436490b7d53870ca4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ],
+          "name": "Voted",
+          "type": "event"
+        },
+        "0xb6be2187d059cc2a55fe29e0e503b566e1e0f8c8780096e185429350acffd3dd": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voterAddress",
+              "type": "address"
+            }
+          ],
+          "name": "VoterRegistered",
+          "type": "event"
+        },
+        "0x0a97a4ee45751e2abf3e4fc8946939630b11b371ea8ae39ccdc3056e98f5cc3f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "enum Voting.WorkflowStatus",
+              "name": "previousStatus",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum Voting.WorkflowStatus",
+              "name": "newStatus",
+              "type": "uint8"
+            }
+          ],
+          "name": "WorkflowStatusChange",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x2277E42cA902F760Ce1713569a55d214558a41A7",
+      "transactionHash": "0xb0e4791a1a503840bbdddab4330f3f479bd61ec4cac2490757243d43b64ea713"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-02-17T23:12:08.345Z",
+  "updatedAt": "2022-02-28T15:07:41.545Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
