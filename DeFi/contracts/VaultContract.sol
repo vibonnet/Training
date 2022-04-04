@@ -51,7 +51,7 @@ contract VaultContract {
             " insufficient balance"
         );
 
-        /* We should ask for the  "approval" of the user  */
+        /* We should ask for the "approval" of the user  */
 
         token.safeTransferFrom(msg.sender, address(this), amount);
         uint256 toMint = getProofTokensValue(amount);
