@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "./VaultToken.sol";
 import "./Token.sol";
 import "@openzeppelin/contracts/token/ERC20//utils/SafeERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /**
  *  Implementation of the VaultContract .
@@ -24,6 +25,7 @@ contract VaultContract {
 
     Token public token;
     VaultToken public vaultToken;
+    AggregatorV3Interface internal priceFeed;
 
     // the exact time when the contract is deployed
     uint256 startingTime;
@@ -31,13 +33,13 @@ contract VaultContract {
     event Deposit(address from, uint256 amount);
     event Witdhraw(address from, uint256 amount);
 
-    constructor(
-        address token_address,
-        address VaultToken_address
-    ) {
+    constructor(address token_address, address VaultToken_address) {
         token = Token(token_address);
         vaultToken = VaultToken(VaultToken_address);
         startingTime = block.timestamp;
+        priceFeed = AggregatorV3Interface(
+            0x8A753747A1Fa494EC906cE90E9f37563A8AF630e
+        );
     }
 
     /**
@@ -73,7 +75,11 @@ contract VaultContract {
             "not enough tokens "
         );
         balance[msg.sender] -= value;
-        deposit[msg.sender] -= amount;
+        if (amount >= deposit[msg.sender]) {
+            deposit[msg.sender] = 0;
+        } else {
+            deposit[msg.sender] -= amount;
+        }
         vaultToken.burn(msg.sender, value);
         token.safeTransfer(msg.sender, amount);
         emit Witdhraw(msg.sender, amount);
@@ -111,5 +117,14 @@ contract VaultContract {
 
     function getUserDeposit(address user) public view returns (uint256) {
         return deposit[user];
+    }
+
+    /**
+     * this function retunr current ETH price from oracle
+     */
+
+    function getLatestPrice() public view returns (int256) {
+        (, int256 price, , , ) = priceFeed.latestRoundData();
+        return price;
     }
 }

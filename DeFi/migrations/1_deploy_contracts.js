@@ -7,7 +7,7 @@ module.exports = function (deployer) {
 };
 
 module.exports = async function (deployer) {
-  await deployer.deploy(Token, "TheToken", "THT", BigInt(1e20));
+  await deployer.deploy(Token, "TheToken", "THT", BigInt(1e23));
   const token = await Token.deployed();
   await deployer.deploy(VaultToken, "ProofToken", "PTK");
   const vaultToken = await VaultToken.deployed();

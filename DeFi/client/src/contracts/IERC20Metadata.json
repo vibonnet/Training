@@ -765,8 +765,8 @@
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.4",
-  "updatedAt": "2022-04-03T14:58:30.099Z",
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-04-04T08:45:49.401Z",
   "devdoc": {
     "details": "Interface for the optional metadata functions from the ERC20 standard. _Available since v4.1._",
     "kind": "dev",

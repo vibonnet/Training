@@ -12,11 +12,11 @@ module.exports = {
       port: 8545,
       network_id: "*"
     },
-    ropsten: {
+    rinkeby: {
       provider: function () {
-        return new HDWalletProvider(`${process.env.MNEMONIC}`, `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`)
+        return new HDWalletProvider(`${process.env.MNEMONIC}`, `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`)
       },
-      network_id: 3
+      network_id: 4
     }
   },
   compilers: {

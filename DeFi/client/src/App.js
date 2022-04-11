@@ -3,8 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Table from 'react-bootstrap/Table';
 import VaultContract from "./contracts/VaultContract.json";
 import TokenContract from "./contracts/Token.json";
 import VaultTokenContract from "./contracts/VaultToken.json";
@@ -14,7 +12,7 @@ import "./App.css";
 const BigNumber = require('bignumber.js');
 
 class App extends Component {
-  state = { web3: null, accounts: null, vault: null, token: null, vaultToken: null };
+  state = { web3: null, accounts: null, vault: null, token: null, vaultToken: null, ethprice: null };
 
   componentDidMount = async () => {
     try {
@@ -47,8 +45,8 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, vault: vault_instance, token: token_instance, vaultToken: vaultToken_instance}, this.runExample);
-
+      this.setState({ web3, accounts, vault: vault_instance, token: token_instance, vaultToken: vaultToken_instance }, this.runExample);
+      this.run()
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -67,41 +65,46 @@ class App extends Component {
   }
 
   run = async () => {
-    const { contract } = this.state;
+    await this.getPrice();
   };
 
   // Init balance and ownership
   init = async () => {
     const { accounts, vaultToken, vault, token } = this.state;
-    let amount = new BigNumber(50).shiftedBy(18);
+    let amount = new BigNumber(50000).shiftedBy(18);
     await token.methods.transfer(vault._address, amount).send({ from: accounts[0] });
     await vaultToken.methods.transferOwnership(vault._address).send({ from: accounts[0] });
     this.run();
   };
 
-  // Approve
-  approve = async (amount) => {
-    const { accounts, token, vault } = this.state;
-    await token.methods.approve(vault._address, amount).send({ from: accounts[0] });
-  };
+  // Get ETH price
+  getPrice = async () => {
+    const { vault } = this.state;
+    const res = await vault.methods.getLatestPrice().call()
+    const price = new BigNumber(res).shiftedBy(-8);
+    this.setState({ ethprice: price.c[0] })
+  }
 
   // Execute "depositToken" function in the contract
   deposit = async () => {
-    const { accounts, vault } = this.state;
-    const amount = new BigNumber(this.amount.value).shiftedBy(18);
-    this.approve()
+    const { accounts, token, vault } = this.state;
+    const amount = new BigNumber(this.deposit_amount.value).shiftedBy(18);
+    console.log(amount)
+    // Approve
+    await token.methods.approve(vault._address, amount).send({ from: accounts[0] });
     await vault.methods.depositToken(amount).send({ from: accounts[0] });
   };
 
-    // Execute "withdrawToken" function in the contract
-    withdraw = async () => {
-      const { accounts, vault } = this.state;
-      const amount = new BigNumber(this.amount.value).shiftedBy(18);
-      await vault.methods.withdrawToken(amount).send({ from: accounts[0] });
-    };
+  // Execute "withdrawToken" function in the contract
+  withdraw = async () => {
+    const { accounts, vault } = this.state;
+    const amount = new BigNumber(this.withdraw_amount.value).shiftedBy(18);
+    console.log(this.withdraw_amount.value)
+    await vault.methods.withdrawToken(amount).send({ from: accounts[0] });
+  };
 
   render() {
-    const { voters, proposals, accounts } = this.state;
+    const { accounts, ethprice } = this.state;
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
@@ -110,7 +113,7 @@ class App extends Component {
         <div>
           <h2 className="text-center">Token Staking</h2>
           <p className="text-center">{accounts[0]}</p>
-          <Button onClick={this.init} variant="dark" > Init </Button>
+          <p className="text-center">ETH={ethprice}$</p>
           <hr></hr>
           <br></br>
         </div>
@@ -119,8 +122,8 @@ class App extends Component {
             <Card.Header><strong>Deposit Token</strong></Card.Header>
             <Card.Body>
               <Form.Group>
-                <Form.Control type="text" id="description" placeholder="Entrer amount"
-                  ref={(input) => { this.amount = input }}
+                <Form.Control type="text" id="deposit" placeholder="Entrer amount"
+                  ref={(input) => { this.deposit_amount = input }}
                 />
               </Form.Group>
               <Button onClick={this.deposit} variant="dark" > Stake </Button>
@@ -132,8 +135,8 @@ class App extends Component {
             <Card.Header><strong>Withdraw Token</strong></Card.Header>
             <Card.Body>
               <Form.Group>
-                <Form.Control type="text" id="description" placeholder="Entrer amount"
-                  ref={(input) => { this.amount = input }}
+                <Form.Control type="text" id="withdraw" placeholder="Entrer amount"
+                  ref={(input) => { this.withdraw_amount = input }}
                 />
               </Form.Group>
               <Button onClick={this.withdraw} variant="dark" > Unstake </Button>
